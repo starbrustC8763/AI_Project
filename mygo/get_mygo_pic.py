@@ -1,0 +1,1 @@
+#Get Picture at https://mypic.0m0.uk/images/{season}/{episode}/{frame_prefer}.webp
