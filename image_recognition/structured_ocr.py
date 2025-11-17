@@ -3,6 +3,10 @@ import json
 from google.cloud import vision
 from typing import List, Dict
 import os
+from dotenv import load_dotenv
+
+load_dotenv()
+api_key = os.getenv("GOOGLE_APPLICATION_CREDENTIALS")
 def detect_chat_structure(image_path: str, threshold_ratio: float = 0.5) -> List[Dict]:
     """
     使用 Google Vision Document OCR 偵測聊天內容，並根據文字位置判斷左右發話者。
@@ -44,8 +48,14 @@ def detect_chat_structure(image_path: str, threshold_ratio: float = 0.5) -> List
             # 判斷氣泡在左或右
             x_positions = [v.x for v in block.bounding_box.vertices]
             avg_x = sum(x_positions) / len(x_positions)
-            side = "left" if avg_x < width * threshold_ratio else "right"
-
+            #side = "left" if avg_x < width * threshold_ratio else "right"
+            
+            if avg_x < width * 0.6 and avg_x > width * 0.4:
+                side = "middle"
+            elif avg_x < width * threshold_ratio:
+                side = "left"
+            else:
+                side = "right"
             # 取平均 Y 位置（用於排序）
             avg_y = sum([v.y for v in block.bounding_box.vertices]) / len(block.bounding_box.vertices)
 
@@ -66,7 +76,7 @@ def detect_chat_structure(image_path: str, threshold_ratio: float = 0.5) -> List
 
     return structured_dialogue
 
-if __name__ == "__main__":
+def main():
     # 測試範例
     test_img = "piyan.png"  # 你可以換成你的聊天截圖
     if os.path.exists(test_img):
@@ -78,3 +88,4 @@ if __name__ == "__main__":
         print(json.dumps(dialogues, ensure_ascii=False, indent=2))
     else:
         print(f"⚠️ 找不到測試圖片:{test_img}")
+main()

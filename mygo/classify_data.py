@@ -12,10 +12,11 @@ from dotenv import load_dotenv
 
 load_dotenv()
 api_key = os.getenv("GEMINI_API_KEY")
+genai.configure(api_key=api_key)
 MODEL = "gemini-2.5-flash"
 
-INPUT_FILE = "mygo_data.json"
-OUTPUT_FILE = "mygo_labeled.json"
+INPUT_FILE = "mygo/mygo_data.json"
+OUTPUT_FILE = "mygo/mygo_labeled.json"
 CHECKPOINT_FILE = "checkpoint.json"
 LOG_FILE = "log.csv"
 
